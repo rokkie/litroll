@@ -1,7 +1,8 @@
 import babel from '@rollup/plugin-babel';
-const html = require('@rollup/plugin-html');
+import html from '@rollup/plugin-html';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import styles from 'rollup-plugin-styles';
 import template from './index.js';
 
 export default {
@@ -14,6 +15,7 @@ export default {
   plugins: [
     typescript(),
     nodeResolve(),
+    styles({ autoModules: true, dts: true, sourceMap: true, namedExports: true }),
     babel({ babelHelpers: 'bundled' }),
     html({ template }),
   ],

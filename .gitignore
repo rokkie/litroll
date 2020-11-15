@@ -156,8 +156,9 @@ dist
 .vscode-test
 
 
-### Generated JS files and sourcemaps ###
+### Generated JS files, sourcemaps and type definitions ###
 src/app.js
 src/app.js.map
 src/**/*.js
 src/**/*.js.map
+src/**/*.d.ts
