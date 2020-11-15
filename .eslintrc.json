@@ -1,0 +1,39 @@
+{
+  "root": true,
+
+  "env": {
+    "browser": true
+  },
+
+  "extends": "eslint:recommended",
+
+  "parserOptions": {
+    "ecmaVersion": 2015,
+    "sourceType": "module"
+  },
+
+  "plugins": [
+    "import"
+  ],
+
+  "rules": {
+    "object-curly-spacing": [
+      "warn", "always"
+    ],
+    "import/no-cycle": [
+      "error"
+    ],
+    "semi": ["warn", "always"],
+    "yoda": [
+      "warn", "always", { "onlyEquality": true }]
+  },
+  "overrides": [
+    {
+      "files": ["rollup.config.js"],
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    }
+  ]
+}

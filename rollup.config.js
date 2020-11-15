@@ -1,6 +1,7 @@
 import babel from '@rollup/plugin-babel';
+import eslint from '@rollup/plugin-eslint';
 import html from '@rollup/plugin-html';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import styles from 'rollup-plugin-styles';
 import template from './index.js';
@@ -13,8 +14,9 @@ export default {
     sourcemap: true,
   },
   plugins: [
+    eslint(),
     typescript(),
-    nodeResolve(),
+    resolve(),
     styles({ autoModules: true, dts: true, sourceMap: true, namedExports: true }),
     babel({ babelHelpers: 'bundled' }),
     html({ template }),
