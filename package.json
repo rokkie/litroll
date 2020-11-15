@@ -8,8 +8,8 @@
   "private": true,
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "rollup -c ./rollup.config.js",
-    "start": "web-dev-server --app-index dist/index.html --open"
+    "build": "rollup --config ./rollup.config.js --watch",
+    "start": "web-dev-server --config ./web-dev-server.config.mjs"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

@@ -13,6 +13,13 @@ export default {
     format: 'es',
     sourcemap: true,
   },
+  watch: {
+    buildDelay: 500,
+    exclude: 'node_modules/**',
+    chokidar: {
+      useFsEvents: false,
+    },
+  },
   plugins: [
     eslint(),
     typescript(),
