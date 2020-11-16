@@ -13,6 +13,19 @@ export default ({ attributes, bundle, files, meta: metas, publicPath, title }) =
 <head>
   ${metas.map(metaTag).join('\n')}
   <title>${title}</title>
+  <style type="text/css">
+  html, body {
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  #main {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+  </style>
   ${(files.css || []).map(styleTag.bind(undefined, publicPath, attributes.link)).join('\\n')}
 </head>
 <body>

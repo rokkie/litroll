@@ -9,7 +9,7 @@
     ]
   },
   "files": [
-    "./src/app.ts"
+    "./src/main.ts"
   ],
   "include": [
     "src/**/*.ts"
