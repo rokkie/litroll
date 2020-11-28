@@ -5,7 +5,9 @@
     "moduleResolution": "Node",
     "sourceMap": true,
     "lib": [
-      "DOM"
+      "DOM",
+      "WebWorker",
+      "WebWorker.ImportScripts"
     ]
   },
   "files": [

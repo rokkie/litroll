@@ -3,6 +3,7 @@ import eslint from '@rollup/plugin-eslint';
 import html from '@rollup/plugin-html';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import omt from '@surma/rollup-plugin-off-main-thread';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import styles from 'rollup-plugin-styles';
 import template from './index.js';
@@ -11,7 +12,7 @@ export default {
   input: 'src/main.ts',
   output: {
     dir: 'dist',
-    format: 'es',
+    format: 'amd',
     sourcemap: true,
   },
   watch: {
@@ -30,6 +31,7 @@ export default {
     eslint(),
     typescript(),
     resolve(),
+    omt(),
     styles({ autoModules: true, dts: true, sourceMap: true, namedExports: true }),
     babel({ babelHelpers: 'bundled' }),
     html({ template }),

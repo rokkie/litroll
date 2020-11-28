@@ -1,11 +1,8 @@
 import { render } from 'lit-html';
+import worker from './store/worker-inst';
 import app from './app';
-import store from './store';
 
-document.addEventListener('DOMContentLoaded', evt => {
-  const main = (evt.target as Document).querySelector('#main');
-  const onStateChange = () => render(app(store.getState()), main);
+const main = document.querySelector('#main');
 
-  store.subscribe(onStateChange);
-  onStateChange(); // initial render
-}, { once: true });
+// re-render app when state changes
+worker.addEventListener('message', (evt: MessageEvent) => render(app(evt.data), main));
