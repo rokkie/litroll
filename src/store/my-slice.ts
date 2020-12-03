@@ -20,13 +20,15 @@ const slice = createSlice({
   },
 });
 
-const selectMySlice = state => state[slice.name];
-
 export const name = slice.name;
 
 export const reducer = slice.reducer;
 
 export const { mychange, loadimg } = slice.actions;
+
+// --
+
+const selectMySlice = state => state[slice.name];
 
 export const selectMyValue = createSelector([selectMySlice], slice => slice.myvalue);
 

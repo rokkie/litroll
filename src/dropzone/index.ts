@@ -5,7 +5,7 @@ import { loadimg } from '../store/my-slice';
 
 export default () => html`
   <div class="${style.dropzone}" @dragenter="${onDragEnter}" @dragover="${onDragOver}" @drop="${onDrop}">
-    drop stuff    
+    drop stuff
   </div>
 `;
 
@@ -13,7 +13,7 @@ const onDrop = async (evt: DragEvent) => {
   evt.preventDefault();
 
   // check if the file is an image
-  if (!evt.dataTransfer.files[0]?.type.match(/^image\//)) return;
+  if (!evt.dataTransfer.files[0].type.match(/^image\//)) return;
 
   // create action from image bytes
   const img = evt.dataTransfer.files[0];
