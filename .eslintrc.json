@@ -8,7 +8,7 @@
   "extends": "eslint:recommended",
 
   "parserOptions": {
-    "ecmaVersion": 2015,
+    "ecmaVersion": 2017,
     "sourceType": "module"
   },
 
@@ -24,9 +24,11 @@
       "error"
     ],
     "semi": ["warn", "always"],
-    "yoda": [
-      "warn", "always", { "onlyEquality": true }]
+    "yoda": ["warn", "always", {
+      "onlyEquality": true
+    }]
   },
+
   "overrides": [
     {
       "files": ["rollup.config.js"],
