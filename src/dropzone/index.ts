@@ -17,7 +17,7 @@ const onDrop = async (evt: DragEvent) => {
   // create action from image bytes
   const img = evt.dataTransfer.files[0];
 
-  // send action to worker, relinquishing control of the image
+  // send action to worker
   worker.postMessage({ type: '**custom/onimagedrop', img });
 };
 

@@ -1,0 +1,7 @@
+.kernel {
+  --kernel-size: 5;
+
+  display: grid;
+  grid-template-rows: repeat(var(--kernel-size), 1fr);
+  grid-template-columns: repeat(var(--kernel-size), 1fr);
+}

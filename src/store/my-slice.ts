@@ -10,7 +10,7 @@ export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: Fil
   return url;
 });
 
-export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (kernel: unknown, thunkAPI) => {
+export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (kernel: number[][], thunkAPI) => {
   const state = thunkAPI.getState();
   const img = state[slice.name].image;
 
@@ -21,17 +21,17 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
   return url;
 });
 
-const thework = async (img: File, kernel: unknown) => {
+const thework = async (img: File, kernel: number[][]) => {
   const bmp = await createImageBitmap(img);
   const osc = new OffscreenCanvas(bmp.width, bmp.height);
   const ctx = osc.getContext('2d');
 
   ctx.drawImage(bmp, 0, 0);
 
-  const dataOrig = ctx.getImageData(0, 0, bmp.width, bmp.height);
-  const dataDest = new ImageData(dataOrig.data, dataOrig.width, dataOrig.height);
+  const orig = ctx.getImageData(0, 0, bmp.width, bmp.height);
+  const dest = applykernel(orig, kernel);
 
-  ctx.putImageData(dataDest, 0 , 0);
+  ctx.putImageData(dest, 0 , 0);
   bmp.close();
 
   const blob = await osc.convertToBlob({ type: img.type });
@@ -40,13 +40,66 @@ const thework = async (img: File, kernel: unknown) => {
   return url;
 };
 
+const applykernel = (orig: ImageData, kernel: number[][]): ImageData => {
+  const dest = new ImageData(orig.width, orig.height);
+  const half = Math.floor(kernel.length / 2);
+  const size = kernel.length ** 2;
+
+  // loop over each pixel of the original image
+  for (let i = 0; i < orig.data.length; i += 4) {
+    // initialize sum values for red, green and blue
+    let sr = 0;
+    let sg = 0;
+    let sb = 0;
+
+    // loop over the kernel values
+    for (let row = 0; row < kernel.length; row++) {
+      for (let col = 0; col < kernel.length; col++) {
+        const kv = kernel[row][col];
+
+        // compute array index for the current kernel value
+        const rowShift = (row - half) * (orig.width * 4);
+        const colShift = (col - half) * 4;
+        const ii = i + rowShift + colShift;
+
+        // TODO: improve edge correction
+        if (ii < 0 || ii > orig.data.length - 3) continue;
+
+        // find corresponding pixel values in the original image
+        const pvr = orig.data[ii + 0];
+        const pvg = orig.data[ii + 1];
+        const pvb = orig.data[ii + 2];
+
+        // multiply the original RGB values with the kernel value and add them to the respective sum values
+        sr += pvr * kv;
+        sg += pvg * kv;
+        sb += pvb * kv;
+      }
+    }
+
+    // TODO: correct size for edges
+    dest.data[i + 0] = Math.round(sr / size);
+    dest.data[i + 1] = Math.round(sg / size);
+    dest.data[i + 2] = Math.round(sb / size);
+    dest.data[i + 3] = orig.data[i + 3]; // leave alpha as it is
+  }
+
+  return dest;
+};
+
 // --
 
 const slice = createSlice({
   name: SLICE_NAME,
   initialState: {
     myvalue: '',
-    kernel: [],
+    kernel: [
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+    ],  // mean blur
     image: null,
     url: null,
   },
@@ -66,7 +119,9 @@ const slice = createSlice({
     },
     // [loadimg.rejected]: (state, action) => {},
 
-    // [loadkernel.pending]: (state, action) => {},
+    [loadkernel.pending as any]: (state, action) => {
+      state.kernel = action.meta.arg;
+    },
     [loadkernel.fulfilled as any]: (state, action) => {
       if (!action.payload) return;
       if (state.url) URL.revokeObjectURL(state.url);
@@ -90,3 +145,5 @@ const selectMySlice = state => state[slice.name];
 export const selectMyValue = createSelector([selectMySlice], slice => slice.myvalue);
 
 export const selectImageUrl = createSelector([selectMySlice], slice => slice.url);
+
+export const selectKernel = createSelector([selectMySlice], slice => slice.kernel);

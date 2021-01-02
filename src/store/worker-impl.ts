@@ -1,5 +1,5 @@
 import store from './index';
-import { loadimg } from './my-slice';
+import { loadimg, loadkernel } from './my-slice';
 
 // dispatch messages sent from the UI thread as actions to the store
 self.addEventListener('message', (evt: MessageEvent) => {
@@ -10,6 +10,13 @@ self.addEventListener('message', (evt: MessageEvent) => {
     switch (evt.data.type) {
       case '**custom/onimagedrop': {
         const action = loadimg(evt.data.img);
+
+        store.dispatch(action);
+        break;
+      }
+
+      case '**custom/onkernelsubmit': {
+        const action = loadkernel(evt.data.kernel);
 
         store.dispatch(action);
         break;
