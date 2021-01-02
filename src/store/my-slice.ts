@@ -60,15 +60,15 @@ const applykernel = (orig: ImageData, kernel: number[][]): ImageData => {
         // compute array index for the current kernel value
         const rowShift = (row - half) * (orig.width * 4);
         const colShift = (col - half) * 4;
-        const ii = i + rowShift + colShift;
+        const idx = i + rowShift + colShift;
 
         // TODO: improve edge correction
-        if (ii < 0 || ii > orig.data.length - 3) continue;
+        if (idx < 0 || idx > orig.data.length - 3) continue;
 
         // find corresponding pixel values in the original image
-        const pvr = orig.data[ii + 0];
-        const pvg = orig.data[ii + 1];
-        const pvb = orig.data[ii + 2];
+        const pvr = orig.data[idx + 0];
+        const pvg = orig.data[idx + 1];
+        const pvb = orig.data[idx + 2];
 
         // multiply the original RGB values with the kernel value and add them to the respective sum values
         sr += pvr * kv;
