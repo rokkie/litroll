@@ -1,7 +1,6 @@
 import { html } from 'lit-html';
 import style from './dropzone.module.scss';
 import worker from '../store/worker-inst';
-import { loadimg } from '../store/my-slice';
 
 export default () => html`
   <div class="${style.dropzone}" @dragenter="${onDragEnter}" @dragover="${onDragOver}" @drop="${onDrop}">
@@ -17,11 +16,9 @@ const onDrop = async (evt: DragEvent) => {
 
   // create action from image bytes
   const img = evt.dataTransfer.files[0];
-  const buf = await img.arrayBuffer();
-  const action = loadimg({ buf, type: img.type });
 
   // send action to worker, relinquishing control of the image
-  worker.postMessage(action, [buf]);
+  worker.postMessage({ type: '**custom/onimagedrop', img });
 };
 
 const onDragEnter = (evt: DragEvent) => {

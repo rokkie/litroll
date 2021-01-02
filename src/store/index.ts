@@ -5,4 +5,5 @@ export default configureStore({
   reducer: {
     [mySliceName]: mySliceReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
