@@ -92,7 +92,7 @@ const applykernel = (orig: ImageData, kernel: number[][]): ImageData => {
 const slice = createSlice({
   name: SLICE_NAME,
   initialState: {
-    myvalue: '',
+    isBusy: false,
     kernel: [
       [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1],
@@ -104,31 +104,36 @@ const slice = createSlice({
     url: null,
   },
   reducers: {
-    mychange: (state, action: PayloadAction<{ newVal: string }>) => {
-      state.myvalue = action.payload.newVal;
-    },
   },
   extraReducers: {
     [loadimg.pending as any]: (state, action) => {
       state.image = action.meta.arg;
+      state.isBusy = true;
     },
     [loadimg.fulfilled as any]: (state, action) => {
       if (state.url) URL.revokeObjectURL(state.url);
 
       state.url = action.payload;
+      state.isBusy = false;
     },
-    // [loadimg.rejected]: (state, action) => {},
+    [loadimg.rejected as any]: (state, action) => {
+      state.isBusy = false;
+    },
 
     [loadkernel.pending as any]: (state, action) => {
       state.kernel = action.meta.arg;
+      state.isBusy = true;
     },
     [loadkernel.fulfilled as any]: (state, action) => {
       if (!action.payload) return;
       if (state.url) URL.revokeObjectURL(state.url);
 
       state.url = action.payload;
+      state.isBusy = false;
     },
-    // [loadkernel.rejected]: (state, action) => {},
+    [loadkernel.rejected as any]: (state, action) => {
+      state.isBusy = false;
+    },
   },
 });
 
@@ -136,13 +141,13 @@ export const name = slice.name;
 
 export const reducer = slice.reducer;
 
-export const { mychange } = slice.actions;
+export const { } = slice.actions;
 
 // --
 
 const selectMySlice = state => state[slice.name];
 
-export const selectMyValue = createSelector([selectMySlice], slice => slice.myvalue);
+export const selectIsBusy = createSelector([selectMySlice], slice => slice.isBusy);
 
 export const selectImageUrl = createSelector([selectMySlice], slice => slice.url);
 
