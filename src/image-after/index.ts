@@ -1,8 +1,8 @@
 import { html } from 'lit-html';
-import { selectAfterImageUrl } from '../store/my-slice';
+import { selectUrlDest } from '../store/my-slice';
 
 export default (state) => {
-  const url = selectAfterImageUrl(state);
+  const url = selectUrlDest(state);
   if (!url) return;
 
   return html`<img src="${url}" alt="">`;
