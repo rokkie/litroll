@@ -4,7 +4,7 @@ import worker from '../store/worker-inst';
 import { createLoadImgMsg } from '../store/my-slice';
 
 export default () => html`
-  <div class="${style.dropzone}" @dragenter="${onDragEnter}" @dragover="${onDragOver}" @drop="${onDrop}">
+  <div class="${style.dropzone}" @dragover="${onDragOver}" @drop="${onDrop}">
     drop stuff
   </div>
 `;
@@ -28,10 +28,6 @@ const onDrop = async (evt: DragEvent) => {
 
   // send message to the worker
   worker.postMessage(msg);
-};
-
-const onDragEnter = (evt: DragEvent) => {
-  evt.preventDefault();
 };
 
 /**
