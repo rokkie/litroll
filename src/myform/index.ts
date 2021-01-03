@@ -7,13 +7,24 @@ import { selectKernel } from '../store/my-slice';
 
 export default (state) => {
   const kernel = selectKernel(state);
-
   const size = kernel.length;
   const fields = [];
   const values = kernel.flat();
+
   for (let i = 0; i < kernel.length ** 2; i++) {
     fields.push(createInputEl('number', `c${i}`, values[i].toString(10)));
   }
+
+  const onChange = (evt: Event) => {
+    const value = (evt.target as HTMLInputElement).value;
+    const size = Number.parseInt(value, 10);
+
+    worker.postMessage({ type: '**custom/onkernelchange', size });
+
+    document
+      .querySelector<HTMLDivElement>(`.${style.kernel}`)
+      .style.setProperty('--kernel-size', value);
+  };
 
   const onClick = (evt: MouseEvent) => {
     evt.preventDefault();
@@ -28,6 +39,7 @@ export default (state) => {
   return html`
     <form>
       <div class="${style.kernel}">${fields}</div>
+      <div><input type="number" min="3" max="25" step="2" value="${size}" @change="${onChange}"></div>
       <button @click="${onClick}">Fire!</button>
     </form>
   `;

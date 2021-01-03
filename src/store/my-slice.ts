@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import chunk from '../util/array-chunk';
 
 const SLICE_NAME = 'myslice';
 
@@ -16,6 +17,35 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
   if (!img) return;
 
   return await thework(img, kernel);
+});
+
+export const scalekernel = createAsyncThunk(`${SLICE_NAME}/scalekernel`, async (size: number, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const prev = state[slice.name].kernel;
+  const next = chunk(size, new Array(size ** 2).fill(1));
+  const offset = Math.abs((prev.length - size) / 2);
+
+  if (prev.length > size) {
+    // kernel got smaller, offset coordinates from previous kernel
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        next[row][col] = prev[row + offset][col + offset];
+      }
+    }
+  } else {
+    // kernel got bigger, offset coordinates in next kernel
+    for (let row = 0; row < prev.length; row++) {
+      for (let col = 0; col < prev.length; col++) {
+        next[row + offset][col + offset] = prev[row][col];
+      }
+    }
+  }
+
+  // create action to load the next kernel
+  const action = loadkernel(next);
+
+  // dispatch the action with the next kernel
+  thunkAPI.dispatch(action);
 });
 
 const thework = async (img: File, kernel: number[][]) => {
@@ -132,6 +162,10 @@ const slice = createSlice({
     [loadkernel.rejected as any]: (state, action) => {
       state.isBusy = false;
     },
+
+    // [scalekernel.pending as any]: (state, action) => {},
+    // [scalekernel.fulfilled as any]: (state, action) => {},
+    // [scalekernel.rejected as any]: (state, action) => {},
   },
 });
 

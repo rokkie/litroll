@@ -1,5 +1,5 @@
 import store from './index';
-import { loadimg, loadkernel } from './my-slice';
+import { loadimg, loadkernel, scalekernel } from './my-slice';
 
 // dispatch messages sent from the UI thread as actions to the store
 self.addEventListener('message', (evt: MessageEvent) => {
@@ -17,6 +17,13 @@ self.addEventListener('message', (evt: MessageEvent) => {
 
       case '**custom/onkernelsubmit': {
         const action = loadkernel(evt.data.kernel);
+
+        store.dispatch(action);
+        break;
+      }
+
+      case '**custom/onkernelchange': {
+        const action = scalekernel(evt.data.size);
 
         store.dispatch(action);
         break;
