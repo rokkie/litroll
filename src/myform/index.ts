@@ -10,6 +10,7 @@ export default (state) => {
   const fields = [];
   const values = kernel.flat();
 
+  // create number inputs for the kernel values
   for (let i = 0; i < kernel.length ** 2; i++) {
     const input = document.createElement('input');
 
@@ -17,20 +18,40 @@ export default (state) => {
     fields.push(input);
   }
 
+  /**
+   * Event handler for when the kernel size input value changes
+   *
+   * Sends the new kernel size to the worker which creates a new kernel
+   * and applies it to the image.
+   *
+   * @param evt
+   */
   const onChange = (evt: Event) => {
+    // read value from the input field and parse it as an integer
     const value = (evt.target as HTMLInputElement).value;
     const size = Number.parseInt(value, 10);
 
+    // send message to the worker with the new kernel size
     worker.postMessage({ type: '**custom/onkernelchange', size });
 
+    // update CSS variable so the grid corresponds with the new kernel size
     document
       .querySelector<HTMLDivElement>(`.${style.kernel}`)
       .style.setProperty('--kernel-size', value);
   };
 
+  /**
+   * Event handler for when kernel is submitted
+   *
+   * Sends the kernel to the worker which applies it to the image.
+   *
+   * @param evt
+   */
   const onClick = (evt: MouseEvent) => {
     evt.preventDefault();
 
+    // read kernel values from the inputs, parse them into floats and chunk them
+    // by the size of the kernel so we end up with a matrix instead of a list
     const values = fields.map(field => Number.parseFloat(field.value));
     const kernel = chunk(size, values);
 

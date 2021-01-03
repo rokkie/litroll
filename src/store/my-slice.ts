@@ -3,6 +3,11 @@ import chunk from '../util/array-chunk';
 
 const SLICE_NAME = 'myslice';
 
+/**
+ * Async action creator for loading an image
+ *
+ * @param img Image to load
+ */
 export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: File, thunkAPI) => {
   const state = thunkAPI.getState();
   const kernel = state[slice.name].kernel;
@@ -10,6 +15,11 @@ export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: Fil
   return await thework(img, kernel);
 });
 
+/**
+ * Async action creator for loading a new kernel
+ *
+ * @param kernel The new kernel to load
+ */
 export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (kernel: number[][], thunkAPI) => {
   const state = thunkAPI.getState();
   const img = state[slice.name].image;
@@ -19,6 +29,11 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
   return await thework(img, kernel);
 });
 
+/**
+ * Async action creator for scaling the current kernel
+ *
+ * @param size The size to scale the kernel to
+ */
 export const scalekernel = createAsyncThunk(`${SLICE_NAME}/scalekernel`, async (size: number, thunkAPI) => {
   const state = thunkAPI.getState();
   const prev = state[slice.name].kernel;
@@ -66,6 +81,14 @@ const thework = async (img: File, kernel: number[][]) => {
   return URL.createObjectURL(blob);
 };
 
+/**
+ * Apply a kernel to an image
+ *
+ * Performs a kernel convolution.
+ *
+ * @param orig Image to apply to kernel on
+ * @param kernel The kernel to apply
+ */
 const applykernel = (orig: ImageData, kernel: number[][]) => {
   const dest = new ImageData(orig.width, orig.height);
   const half = Math.floor(kernel.length / 2);

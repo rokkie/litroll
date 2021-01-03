@@ -1,8 +1,9 @@
 import store from './index';
 import { loadimg, loadkernel, scalekernel } from './my-slice';
 
-// dispatch messages sent from the UI thread as actions to the store
+// install event handler from incoming messages from the UI thread
 self.addEventListener('message', (evt: MessageEvent) => {
+  // ignore messages that don't have a `type`
   if (!evt.data.type) return;
 
   if (evt.data.type.startsWith('**custom/')) {
