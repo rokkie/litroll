@@ -101,19 +101,23 @@ const slice = createSlice({
       [1, 1, 1, 1, 1],
     ],  // mean blur
     image: null,
-    url: null,
+    urlBefore: null,
+    urlAfter: null,
   },
   reducers: {
   },
   extraReducers: {
     [loadimg.pending as any]: (state, action) => {
+      if (state.urlBefore) URL.revokeObjectURL(state.urlBefore);
+
       state.image = action.meta.arg;
+      state.urlBefore = URL.createObjectURL(action.meta.arg);
       state.isBusy = true;
     },
     [loadimg.fulfilled as any]: (state, action) => {
-      if (state.url) URL.revokeObjectURL(state.url);
+      if (state.urlAfter) URL.revokeObjectURL(state.urlAfter);
 
-      state.url = action.payload;
+      state.urlAfter = action.payload;
       state.isBusy = false;
     },
     [loadimg.rejected as any]: (state, action) => {
@@ -126,9 +130,9 @@ const slice = createSlice({
     },
     [loadkernel.fulfilled as any]: (state, action) => {
       if (!action.payload) return;
-      if (state.url) URL.revokeObjectURL(state.url);
+      if (state.urlAfter) URL.revokeObjectURL(state.urlAfter);
 
-      state.url = action.payload;
+      state.urlAfter = action.payload;
       state.isBusy = false;
     },
     [loadkernel.rejected as any]: (state, action) => {
@@ -149,6 +153,8 @@ const selectMySlice = state => state[slice.name];
 
 export const selectIsBusy = createSelector([selectMySlice], slice => slice.isBusy);
 
-export const selectImageUrl = createSelector([selectMySlice], slice => slice.url);
+export const selectBeforeImageUrl = createSelector([selectMySlice], slice => slice.urlBefore);
+
+export const selectAfterImageUrl = createSelector([selectMySlice], slice => slice.urlAfter);
 
 export const selectKernel = createSelector([selectMySlice], slice => slice.kernel);
