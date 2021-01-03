@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import style from './myform.module.scss';
 import chunk from '../util/array-chunk';
 import worker from '../store/worker-inst';
-import { selectKernel } from '../store/my-slice';
+import { createLoadKernelMsg, createScaleKernelMsg, selectKernel } from '../store/my-slice';
 
 export default (state) => {
   const kernel = selectKernel(state);
@@ -29,10 +29,11 @@ export default (state) => {
   const onChange = (evt: Event) => {
     // read value from the input field and parse it as an integer
     const value = (evt.target as HTMLInputElement).value;
-    const size = Number.parseInt(value, 10);
+    const size  = Number.parseInt(value, 10);
+    const msg   = createScaleKernelMsg(size);
 
-    // send message to the worker with the new kernel size
-    worker.postMessage({ type: '**custom/onkernelchange', size });
+    // send message with the new kernel size to the worker
+    worker.postMessage(msg);
 
     // update CSS variable so the grid corresponds with the new kernel size
     document
@@ -54,9 +55,10 @@ export default (state) => {
     // by the size of the kernel so we end up with a matrix instead of a list
     const values = fields.map(field => Number.parseFloat(field.value));
     const kernel = chunk(size, values);
+    const msg    = createLoadKernelMsg(kernel);
 
-    // send action to the worker
-    worker.postMessage({ type: '**custom/onkernelsubmit', kernel });
+    // send message with the new kernel to the worker
+    worker.postMessage(msg);
   };
 
   return html`

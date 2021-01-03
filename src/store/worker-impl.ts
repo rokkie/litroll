@@ -6,36 +6,33 @@ self.addEventListener('message', (evt: MessageEvent) => {
   // ignore messages that don't have a `type`
   if (!evt.data.type) return;
 
-  if (evt.data.type.startsWith('**custom/')) {
-
-    switch (evt.data.type) {
-      case '**custom/onimagedrop': {
-        const action = loadimg(evt.data.img);
-
-        store.dispatch(action);
-        break;
-      }
-
-      case '**custom/onkernelsubmit': {
-        const action = loadkernel(evt.data.kernel);
-
-        store.dispatch(action);
-        break;
-      }
-
-      case '**custom/onkernelchange': {
-        const action = scalekernel(evt.data.size);
-
-        store.dispatch(action);
-        break;
-      }
-
-      default:
-        break;
+  // lay-mans double dispatch
+  // We can't send the async thunks from the UI thread because they return a function
+  // which we can't send via `postMessage`. If we execute these resulting functions to obtain
+  // a serializable action the async work will be performed on the UI thread which is what
+  // we are trying to prevent in the first place. So instead we send messages with a `type`
+  // that corresponds to the thunk we want to dispatch.
+  switch (evt.data.type) {
+    case loadimg.typePrefix: {
+      store.dispatch(loadimg(evt.data.img));
+      break;
     }
 
-  } else {
-    store.dispatch(evt.data);
+    case loadkernel.typePrefix: {
+      store.dispatch(loadkernel(evt.data.kernel));
+      break;
+    }
+
+    case scalekernel.typePrefix: {
+      store.dispatch(scalekernel(evt.data.size));
+      break;
+    }
+
+    // allow ordinary actions to be sent to the worker from the UI thread
+    // and have them dispatched as store actions
+    default:
+      store.dispatch(evt.data);
+      break;
   }
 });
 

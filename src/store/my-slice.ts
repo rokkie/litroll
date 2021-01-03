@@ -137,6 +137,27 @@ const applykernel = (orig: ImageData, kernel: number[][]) => {
   return dest;
 };
 
+/**
+ * Create a message to load a new image
+ *
+ * @param img The image to load
+ */
+export const createLoadImgMsg = (img: File) => ({ type: loadimg.typePrefix, img });
+
+/**
+ * Create a message to load a new kernel
+ *
+ * @param kernel The kernel to load
+ */
+export const createLoadKernelMsg = (kernel: number[][]) => ({ type: loadkernel.typePrefix, kernel });
+
+/**
+ * Create a message to scale the kernel
+ *
+ * @param size The size of the kernel
+ */
+export const createScaleKernelMsg = (size: number) => ({ type: scalekernel.typePrefix, size });
+
 // --
 
 const slice = createSlice({
