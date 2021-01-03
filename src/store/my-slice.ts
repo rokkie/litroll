@@ -94,12 +94,10 @@ const slice = createSlice({
   initialState: {
     isBusy: false,
     kernel: [
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1],
-    ],  // mean blur
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ], // mean blur
     image: null,
     urlOrig: null,
     urlDest: null,
