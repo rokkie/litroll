@@ -1,13 +1,12 @@
-import {createSelector, createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 
 const SLICE_NAME = 'myslice';
 
 export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: File, thunkAPI) => {
   const state = thunkAPI.getState();
   const kernel = state[slice.name].kernel;
-  const url = await thework(img, kernel);
 
-  return url;
+  return await thework(img, kernel);
 });
 
 export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (kernel: number[][], thunkAPI) => {
@@ -16,9 +15,7 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
 
   if (!img) return;
 
-  const url = await thework(img, kernel);
-
-  return url;
+  return await thework(img, kernel);
 });
 
 const thework = async (img: File, kernel: number[][]) => {
@@ -31,16 +28,15 @@ const thework = async (img: File, kernel: number[][]) => {
   const orig = ctx.getImageData(0, 0, bmp.width, bmp.height);
   const dest = applykernel(orig, kernel);
 
-  ctx.putImageData(dest, 0 , 0);
+  ctx.putImageData(dest, 0, 0);
   bmp.close();
 
   const blob = await osc.convertToBlob({ type: img.type });
-  const url = URL.createObjectURL(blob);
 
-  return url;
+  return URL.createObjectURL(blob);
 };
 
-const applykernel = (orig: ImageData, kernel: number[][]): ImageData => {
+const applykernel = (orig: ImageData, kernel: number[][]) => {
   const dest = new ImageData(orig.width, orig.height);
   const half = Math.floor(kernel.length / 2);
   const size = kernel.length ** 2;
@@ -77,6 +73,7 @@ const applykernel = (orig: ImageData, kernel: number[][]): ImageData => {
       }
     }
 
+    // normalize sum values and write the result to the destination image
     // TODO: correct size for edges
     dest.data[i + 0] = Math.round(sr / size);
     dest.data[i + 1] = Math.round(sg / size);
@@ -93,17 +90,16 @@ const slice = createSlice({
   name: SLICE_NAME,
   initialState: {
     isBusy: false,
+    image: null,
+    urlOrig: null,
+    urlDest: null,
     kernel: [
       [1, 1, 1],
       [1, 1, 1],
       [1, 1, 1],
     ], // mean blur
-    image: null,
-    urlOrig: null,
-    urlDest: null,
   },
-  reducers: {
-  },
+  reducers: {},
   extraReducers: {
     [loadimg.pending as any]: (state, action) => {
       if (state.urlOrig) URL.revokeObjectURL(state.urlOrig);
@@ -143,7 +139,7 @@ export const name = slice.name;
 
 export const reducer = slice.reducer;
 
-export const { } = slice.actions;
+export const {} = slice.actions;
 
 // --
 
