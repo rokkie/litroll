@@ -1,7 +1,6 @@
 import { html } from 'lit-html';
 import style from './myform.module.scss';
 import chunk from '../util/array-chunk';
-import createInputEl from '../util/create-input-el';
 import worker from '../store/worker-inst';
 import { selectKernel } from '../store/my-slice';
 
@@ -12,7 +11,10 @@ export default (state) => {
   const values = kernel.flat();
 
   for (let i = 0; i < kernel.length ** 2; i++) {
-    fields.push(createInputEl('number', `c${i}`, values[i].toString(10)));
+    const input = document.createElement('input');
+
+    Object.assign(input, { type: 'number', name: `kv-${i}`, value: values[i].toString(10) });
+    fields.push(input);
   }
 
   const onChange = (evt: Event) => {
