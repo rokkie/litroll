@@ -1,5 +1,5 @@
 import store from './index';
-import { loadimg, loadkernel, scalekernel } from './my-slice';
+import { loadImage, loadKernel, scaleKernel } from './my-slice';
 
 // install event handler from incoming messages from the UI thread
 self.addEventListener('message', (evt: MessageEvent) => {
@@ -13,18 +13,18 @@ self.addEventListener('message', (evt: MessageEvent) => {
   // we are trying to prevent in the first place. So instead we send messages with a `type`
   // that corresponds to the thunk we want to dispatch.
   switch (evt.data.type) {
-    case loadimg.typePrefix: {
-      store.dispatch(loadimg(evt.data.img));
+    case loadImage.typePrefix: {
+      store.dispatch(loadImage(evt.data.img));
       break;
     }
 
-    case loadkernel.typePrefix: {
-      store.dispatch(loadkernel(evt.data.kernel));
+    case loadKernel.typePrefix: {
+      store.dispatch(loadKernel(evt.data.kernel));
       break;
     }
 
-    case scalekernel.typePrefix: {
-      store.dispatch(scalekernel(evt.data.size));
+    case scaleKernel.typePrefix: {
+      store.dispatch(scaleKernel(evt.data.size));
       break;
     }
 

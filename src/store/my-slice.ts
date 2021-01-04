@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 import chunk from '../util/array-chunk';
 
-const SLICE_NAME = 'myslice';
+const SLICE_NAME = 'my-slice';
 
 /**
  * Async action creator for loading an image
  *
  * @param img Image to load
  */
-export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: File, thunkAPI) => {
+export const loadImage = createAsyncThunk(`${SLICE_NAME}/load-image`, async (img: File, thunkAPI) => {
   const state = thunkAPI.getState();
   const kernel = state[slice.name].kernel;
 
@@ -20,7 +20,7 @@ export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: Fil
  *
  * @param kernel The new kernel to load
  */
-export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (kernel: number[][], thunkAPI) => {
+export const loadKernel = createAsyncThunk(`${SLICE_NAME}/load-kernel`, async (kernel: number[][], thunkAPI) => {
   const state = thunkAPI.getState();
   const img = state[slice.name].image;
 
@@ -34,7 +34,7 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
  *
  * @param size The size to scale the kernel to
  */
-export const scalekernel = createAsyncThunk(`${SLICE_NAME}/scalekernel`, async (size: number, thunkAPI) => {
+export const scaleKernel = createAsyncThunk(`${SLICE_NAME}/scale-kernel`, async (size: number, thunkAPI) => {
   const state = thunkAPI.getState();
   const prev = state[slice.name].kernel;
   const next = chunk(size, new Array(size ** 2).fill(1));
@@ -57,7 +57,7 @@ export const scalekernel = createAsyncThunk(`${SLICE_NAME}/scalekernel`, async (
   }
 
   // create action to load the next kernel
-  const action = loadkernel(next);
+  const action = loadKernel(next);
 
   // dispatch the action with the next kernel
   thunkAPI.dispatch(action);
@@ -173,21 +173,21 @@ const applyKernel = (orig: ImageData, kernel: number[][]) => {
  *
  * @param img The image to load
  */
-export const createLoadImgMsg = (img: File) => ({ type: loadimg.typePrefix, img });
+export const createLoadImgMsg = (img: File) => ({ type: loadImage.typePrefix, img });
 
 /**
  * Create a message to load a new kernel
  *
  * @param kernel The kernel to load
  */
-export const createLoadKernelMsg = (kernel: number[][]) => ({ type: loadkernel.typePrefix, kernel });
+export const createLoadKernelMsg = (kernel: number[][]) => ({ type: loadKernel.typePrefix, kernel });
 
 /**
  * Create a message to scale the kernel
  *
  * @param size The size of the kernel
  */
-export const createScaleKernelMsg = (size: number) => ({ type: scalekernel.typePrefix, size });
+export const createScaleKernelMsg = (size: number) => ({ type: scaleKernel.typePrefix, size });
 
 // --
 
@@ -206,41 +206,41 @@ const slice = createSlice({
   },
   reducers: {},
   extraReducers: {
-    [loadimg.pending as any]: (state, action) => {
+    [loadImage.pending as any]: (state, action) => {
       if (state.urlOrig) URL.revokeObjectURL(state.urlOrig);
 
       state.image = action.meta.arg;
       state.urlOrig = URL.createObjectURL(action.meta.arg);
       state.isBusy = true;
     },
-    [loadimg.fulfilled as any]: (state, action) => {
+    [loadImage.fulfilled as any]: (state, action) => {
       if (state.urlDest) URL.revokeObjectURL(state.urlDest);
 
       state.urlDest = action.payload;
       state.isBusy = false;
     },
-    [loadimg.rejected as any]: (state, action) => {
+    [loadImage.rejected as any]: (state, action) => {
       state.isBusy = false;
     },
 
-    [loadkernel.pending as any]: (state, action) => {
+    [loadKernel.pending as any]: (state, action) => {
       state.kernel = action.meta.arg;
       state.isBusy = true;
     },
-    [loadkernel.fulfilled as any]: (state, action) => {
+    [loadKernel.fulfilled as any]: (state, action) => {
       if (!action.payload) return;
       if (state.urlDest) URL.revokeObjectURL(state.urlDest);
 
       state.urlDest = action.payload;
       state.isBusy = false;
     },
-    [loadkernel.rejected as any]: (state, action) => {
+    [loadKernel.rejected as any]: (state, action) => {
       state.isBusy = false;
     },
 
-    // [scalekernel.pending as any]: (state, action) => {},
-    // [scalekernel.fulfilled as any]: (state, action) => {},
-    // [scalekernel.rejected as any]: (state, action) => {},
+    // [scaleKernel.pending as any]: (state, action) => {},
+    // [scaleKernel.fulfilled as any]: (state, action) => {},
+    // [scaleKernel.rejected as any]: (state, action) => {},
   },
 });
 
