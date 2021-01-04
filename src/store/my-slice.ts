@@ -12,7 +12,7 @@ export const loadimg = createAsyncThunk(`${SLICE_NAME}/loadimg`, async (img: Fil
   const state = thunkAPI.getState();
   const kernel = state[slice.name].kernel;
 
-  return await thework(img, kernel);
+  return await filterImage(img, kernel);
 });
 
 /**
@@ -26,7 +26,7 @@ export const loadkernel = createAsyncThunk(`${SLICE_NAME}/loadkernel`, async (ke
 
   if (!img) return;
 
-  return await thework(img, kernel);
+  return await filterImage(img, kernel);
 });
 
 /**
@@ -63,21 +63,35 @@ export const scalekernel = createAsyncThunk(`${SLICE_NAME}/scalekernel`, async (
   thunkAPI.dispatch(action);
 });
 
-const thework = async (img: File, kernel: number[][]) => {
+/**
+ * Filter an image using a kernel
+ *
+ * Applies a kernel convolution to an image file
+ *
+ * @param img The image to filter
+ * @param kernel The kernel to apply
+ */
+const filterImage = async (img: File, kernel: number[][]) => {
+  // create 2d drawing context of the same size as the image file
   const bmp = await createImageBitmap(img);
   const osc = new OffscreenCanvas(bmp.width, bmp.height);
   const ctx = osc.getContext('2d');
 
+  // draw the image onto the canvas
   ctx.drawImage(bmp, 0, 0);
 
+  // obtain raw pixel data from the context so we can apply the kernel
   const orig = ctx.getImageData(0, 0, bmp.width, bmp.height);
-  const dest = applykernel(orig, kernel);
+  const dest = applyKernel(orig, kernel);
 
+  // draw the new pixels onto the canvas and close to original bitmap (because memory)
   ctx.putImageData(dest, 0, 0);
   bmp.close();
 
+  // convert canvas to a blob of the same type as the original image
   const blob = await osc.convertToBlob({ type: img.type });
 
+  // create object url from the blob
   return URL.createObjectURL(blob);
 };
 
@@ -89,7 +103,7 @@ const thework = async (img: File, kernel: number[][]) => {
  * @param orig Image to apply to kernel on
  * @param kernel The kernel to apply
  */
-const applykernel = (orig: ImageData, kernel: number[][]) => {
+const applyKernel = (orig: ImageData, kernel: number[][]) => {
   const dest = new ImageData(orig.width, orig.height);
   const half = Math.floor(kernel.length / 2);
 
