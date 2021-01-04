@@ -92,27 +92,42 @@ const thework = async (img: File, kernel: number[][]) => {
 const applykernel = (orig: ImageData, kernel: number[][]) => {
   const dest = new ImageData(orig.width, orig.height);
   const half = Math.floor(kernel.length / 2);
-  const size = kernel.length ** 2;
 
   // loop over each pixel of the original image
   for (let i = 0; i < orig.data.length; i += 4) {
+    // compute coordinate of the original image based on linear index
+    const i1d  = Math.floor(i / 4);
+    const irow = Math.floor(i1d / orig.width);
+    const icol = i1d % orig.width;
+
     // initialize sum values for red, green and blue
     let sr = 0;
     let sg = 0;
     let sb = 0;
 
+    // keep track of the number of kernel values since only part of the kernel is used around the edges
+    let count = 0;
+
     // loop over the kernel values
-    for (let row = 0; row < kernel.length; row++) {
-      for (let col = 0; col < kernel.length; col++) {
-        const kv = kernel[row][col];
+    for (let krow = 0; krow < kernel.length; krow++) {
+      for (let kcol = 0; kcol < kernel.length; kcol++) {
+        const kv = kernel[krow][kcol];
+
+        // compute relative position from the center of the kernel
+        const relX = kcol - half;
+        const relY = krow - half;
+
+        // translate relative position to original coordinates
+        const posX = icol + relX;
+        const posY = irow + relY;
+
+        // check if we are still within the bounds of the original image
+        if (posX < 0 || posX >= orig.width || posY < 0 || posY >= orig.height) continue;
 
         // compute array index for the current kernel value
-        const rowShift = (row - half) * (orig.width * 4);
-        const colShift = (col - half) * 4;
+        const rowShift = relY * (orig.width * 4);
+        const colShift = relX * 4;
         const idx = i + rowShift + colShift;
-
-        // TODO: improve edge correction
-        if (idx < 0 || idx > orig.data.length - 3) continue;
 
         // find corresponding pixel values in the original image
         const pvr = orig.data[idx + 0];
@@ -123,14 +138,16 @@ const applykernel = (orig: ImageData, kernel: number[][]) => {
         sr += pvr * kv;
         sg += pvg * kv;
         sb += pvb * kv;
+
+        // add one to the number of used kernel values
+        count++;
       }
     }
 
     // normalize sum values and write the result to the destination image
-    // TODO: correct size for edges
-    dest.data[i + 0] = Math.round(sr / size);
-    dest.data[i + 1] = Math.round(sg / size);
-    dest.data[i + 2] = Math.round(sb / size);
+    dest.data[i + 0] = Math.round(sr / count);
+    dest.data[i + 1] = Math.round(sg / count);
+    dest.data[i + 2] = Math.round(sb / count);
     dest.data[i + 3] = orig.data[i + 3]; // leave alpha as it is
   }
 
