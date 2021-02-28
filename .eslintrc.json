@@ -23,10 +23,7 @@
     "import/no-cycle": [
       "error"
     ],
-    "semi": ["warn", "always"],
-    "yoda": ["warn", "always", {
-      "onlyEquality": true
-    }]
+    "semi": ["warn", "always"]
   },
 
   "overrides": [
