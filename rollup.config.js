@@ -1,8 +1,10 @@
+import path from 'path';
 import babel from '@rollup/plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 import html from '@rollup/plugin-html';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import url from '@rollup/plugin-url';
 import omt from '@surma/rollup-plugin-off-main-thread';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import styles from 'rollup-plugin-styles';
@@ -32,8 +34,9 @@ export default {
     typescript(),
     resolve(),
     omt(),
+    url({ fileName: '[dirname][hash][extname]', destDir: 'dist', sourceDir: path.join(__dirname, 'src') }),
     styles({ autoModules: true, dts: true, sourceMap: true, namedExports: true }),
     babel({ babelHelpers: 'bundled' }),
-    html({ template }),
+    html({ template, title: 'Kernel Convolution Off the Main Thread' }),
   ],
 };

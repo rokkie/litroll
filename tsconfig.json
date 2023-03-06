@@ -3,6 +3,7 @@
     "module": "ES2015",
     "target": "ES2018",
     "moduleResolution": "Node",
+    "importHelpers": true,
     "sourceMap": true,
     "lib": [
       "DOM",
@@ -11,9 +12,10 @@
     ]
   },
   "files": [
-    "./src/main.ts"
+    "src/main.ts"
   ],
   "include": [
+    "typings/*.d.ts",
     "src/**/*.ts"
   ],
   "exclude": [

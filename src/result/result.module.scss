@@ -1,0 +1,15 @@
+.result {
+  --size: 2rem;
+
+  p {
+    margin: 0;
+    margin-block-end: .5rem;
+    color: var(--color-primary);
+  }
+
+  svg {
+    width: var(--size);
+    height: var(--size);
+    fill: var(--color-primary);
+  }
+}

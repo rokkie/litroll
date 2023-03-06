@@ -1,4 +1,37 @@
 .dropzone {
-  height: 100px;
-  background: #32ff15;
+  --size: 2rem;
+
+  border: .2rem var(--color-primary) dashed;
+  padding: .5rem 0 0 0;
+  display: grid;
+  place-items: center;
+
+  &.hasImage {
+    padding: 0;
+  }
+
+  &.dragover {
+    border-style: solid;
+  }
+
+  & > img {
+    pointer-events: none;
+  }
+
+  & > div {
+    pointer-events: none;
+    text-align: center;
+
+    p {
+      margin: 0;
+      margin-block-end: .5rem;
+      color: var(--color-primary);
+    }
+
+    svg {
+      width: var(--size);
+      height: var(--size);
+      fill: var(--color-primary);
+    }
+  }
 }

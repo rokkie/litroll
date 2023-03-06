@@ -66,7 +66,7 @@ export const scaleKernel = createAsyncThunk(`${SLICE_NAME}/scale-kernel`, async 
 /**
  * Filter an image using a kernel
  *
- * Applies a kernel convolution to an image file
+ * Applies a kernel convolution to an image file.
  *
  * @param img The image to filter
  * @param kernel The kernel to apply
@@ -195,6 +195,7 @@ const slice = createSlice({
   name: SLICE_NAME,
   initialState: {
     isBusy: false,
+    error: null,
     image: null,
     urlOrig: null,
     urlDest: null,
@@ -212,6 +213,7 @@ const slice = createSlice({
       state.image = action.meta.arg;
       state.urlOrig = URL.createObjectURL(action.meta.arg);
       state.isBusy = true;
+      state.error = null;
     },
     [loadImage.fulfilled as any]: (state, action) => {
       if (state.urlDest) URL.revokeObjectURL(state.urlDest);
@@ -219,13 +221,15 @@ const slice = createSlice({
       state.urlDest = action.payload;
       state.isBusy = false;
     },
-    [loadImage.rejected as any]: (state, action) => {
+    [loadImage.rejected as any]: (state, { error }) => {
+      state.error = error.message;
       state.isBusy = false;
     },
 
     [loadKernel.pending as any]: (state, action) => {
       state.kernel = action.meta.arg;
       state.isBusy = true;
+      state.error = null;
     },
     [loadKernel.fulfilled as any]: (state, action) => {
       if (!action.payload) return;
@@ -234,13 +238,23 @@ const slice = createSlice({
       state.urlDest = action.payload;
       state.isBusy = false;
     },
-    [loadKernel.rejected as any]: (state, action) => {
+    [loadKernel.rejected as any]: (state, { error }) => {
+      state.error = error.message;
       state.isBusy = false;
     },
 
-    // [scaleKernel.pending as any]: (state, action) => {},
-    // [scaleKernel.fulfilled as any]: (state, action) => {},
-    // [scaleKernel.rejected as any]: (state, action) => {},
+    [scaleKernel.pending as any]: (state, action) => {
+      state.isBusy = true;
+      state.error = null;
+    },
+    [scaleKernel.fulfilled as any]: (state, action) => {
+      state.isBusy = false;
+      state.error = null;
+    },
+    [scaleKernel.rejected as any]: (state, { error }) => {
+      state.error = error.message;
+      state.isBusy = false;
+    },
   },
 });
 
@@ -255,6 +269,8 @@ export const {} = slice.actions;
 const selectMySlice = state => state[slice.name];
 
 export const selectIsBusy = createSelector([selectMySlice], slice => slice.isBusy);
+
+export const selectErrorMsg = createSelector([selectMySlice], slice => slice.error);
 
 export const selectUrlOrig = createSelector([selectMySlice], slice => slice.urlOrig);
 

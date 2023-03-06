@@ -1,5 +1,5 @@
 
-const attrs = o => Object.entries(o || {}).map(([k, v]) => `${k}="${v}"`).join('');
+const attrs = o => Object.entries(o || {}).map(([k, v]) => `${k}="${v}"`).join(' ');
 
 const metaTag = o => `<meta ${attrs(o)} />`;
 
@@ -14,9 +14,19 @@ export default ({ attributes, bundle, files, meta: metas, publicPath, title }) =
   ${metas.map(metaTag).join('\n')}
   <title>${title}</title>
   <style type="text/css">
+  @import url(//fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600&display=swap);
+
+  :root {
+    --color-primary: #474f66;
+    --color-secondary: #fff5f5;
+  }
+
   html, body {
     margin: 0;
     box-sizing: border-box;
+    font-size: 16px;
+    font-family: 'Fira Sans', sans-serif;
+      font-weight: 400;
   }
 
   #main {

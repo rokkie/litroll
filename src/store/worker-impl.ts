@@ -31,7 +31,7 @@ self.addEventListener('message', (evt: MessageEvent) => {
     // allow ordinary actions to be sent to the worker from the UI thread
     // and have them dispatched as store actions
     default:
-      store.dispatch(evt.data);
+      // store.dispatch(evt.data);
       break;
   }
 });

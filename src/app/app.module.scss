@@ -1,0 +1,58 @@
+.header {
+  height: 3rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: .5rem 2rem;
+
+  h1 {
+    flex: 1;
+
+    @media (max-width: 670px) {
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 570px) {
+      font-size: 1rem;
+    }
+  }
+
+  .github {
+    --size: 2rem;
+
+    width: var(--size);
+    height: var(--size);
+    fill: #fff;
+  }
+}
+
+.main {
+  padding: 1rem 2rem;
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas:
+    'kernel        config'
+    'before-header after-header'
+    'before-image  after-image'
+    'info          info';
+
+  @media (max-width: 425px) {
+    //flex-direction: column;
+    //align-items: start;
+  }
+}
+
+.footer {
+  --height: 1.5rem;
+
+  height: var(--height);
+  line-height: var(--height);
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  padding: .1rem 2rem;
+  font-size: .8rem;
+}

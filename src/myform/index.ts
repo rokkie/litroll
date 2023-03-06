@@ -6,7 +6,7 @@ import { createLoadKernelMsg, createScaleKernelMsg, selectKernel } from '../stor
 
 export default (state) => {
   const kernel = selectKernel(state);
-  const size = kernel.length;
+  const size   = kernel.length;
   const fields = [];
   const values = kernel.flat();
 
@@ -62,10 +62,15 @@ export default (state) => {
   };
 
   return html`
-    <form>
-      <div class="${style.kernel}">${fields}</div>
-      <div><input type="number" min="3" max="25" step="2" value="${size}" @change="${onChange}"></div>
-      <button @click="${onClick}">Fire!</button>
+    <form class="${style.myform}">
+      <div class="${style.kernel}">
+        ${fields}
+      </div>
     </form>
+    <div class="${style.config}">
+      <label for="kernel-size">Kernel size</label>
+      <input id="kernel-size" type="number" min="3" max="25" step="2" value="${size}" @change="${onChange}">
+      <button @click="${onClick}">Apply Kernel</button>
+    </div>
   `;
 };
