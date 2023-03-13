@@ -52,7 +52,7 @@ export default (state) => {
     evt.preventDefault();
 
     // read kernel values from the inputs, parse them into floats and chunk them
-    // by the size of the kernel so we end up with a matrix instead of a list
+    // by the size of the kernel, so we end up with a matrix instead of a list
     const values = fields.map(field => Number.parseFloat(field.value));
     const kernel = chunk(size, values);
     const msg    = createLoadKernelMsg(kernel);

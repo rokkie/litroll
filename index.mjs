@@ -26,7 +26,7 @@ export default ({ attributes, bundle, files, meta: metas, publicPath, title }) =
     box-sizing: border-box;
     font-size: 16px;
     font-family: 'Fira Sans', sans-serif;
-      font-weight: 400;
+    font-weight: 400;
   }
 
   #main {
