@@ -1,4 +1,5 @@
 .header {
+  container: header / inline-size;
   height: 3rem;
   background-color: var(--color-primary);
   color: var(--color-secondary);
@@ -10,11 +11,11 @@
   h1 {
     flex: 1;
 
-    @media (max-width: 670px) {
+    @container header (max-width: 670px) {
       font-size: 1.5rem;
     }
 
-    @media (max-width: 570px) {
+    @container header (max-width: 570px) {
       font-size: 1rem;
     }
   }
@@ -40,9 +41,10 @@
     'before-image  after-image'
     'info          info';
 
-  @media (max-width: 425px) {
-    //flex-direction: column;
-    //align-items: start;
+  @container main (max-width: 570px) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

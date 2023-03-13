@@ -30,6 +30,7 @@ export default ({ attributes, bundle, files, meta: metas, publicPath, title }) =
   }
 
   #main {
+    container: main / size;
     width: 100vw;
     height: 100vh;
     display: grid;
