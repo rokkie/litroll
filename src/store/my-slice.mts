@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
-import chunk from '../util/array-chunk';
+import chunk from '../util/array-chunk.mjs';
 
 const SLICE_NAME = 'my-slice';
 
@@ -77,6 +77,9 @@ const filterImage = async (img: File, kernel: number[][]) => {
   const osc = new OffscreenCanvas(bmp.width, bmp.height);
   const ctx = osc.getContext('2d');
 
+  // narrow type to OffscreenCanvasRenderingContext2D
+  if (!('drawImage' in ctx)) throw new Error('Incorrect rendering context');
+
   // draw the image onto the canvas
   ctx.drawImage(bmp, 0, 0);
 
@@ -89,6 +92,8 @@ const filterImage = async (img: File, kernel: number[][]) => {
   bmp.close();
 
   // convert canvas to a blob of the same type as the original image
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const blob = await osc.convertToBlob({ type: img.type });
 
   // create object url from the blob
@@ -206,63 +211,63 @@ const slice = createSlice({
     ], // mean blur
   },
   reducers: {},
-  extraReducers: {
-    [loadImage.pending as any]: (state, action) => {
+  extraReducers: builder => {
+    builder.addCase(loadImage.pending, (state, action) => {
       if (state.urlOrig) URL.revokeObjectURL(state.urlOrig);
 
       state.image = action.meta.arg;
       state.urlOrig = URL.createObjectURL(action.meta.arg);
       state.isBusy = true;
       state.error = null;
-    },
-    [loadImage.fulfilled as any]: (state, action) => {
+    });
+    builder.addCase(loadImage.fulfilled, (state, action) => {
       if (state.urlDest) URL.revokeObjectURL(state.urlDest);
 
       state.urlDest = action.payload;
       state.isBusy = false;
-    },
-    [loadImage.rejected as any]: (state, { error }) => {
+    });
+    builder.addCase(loadImage.rejected, (state, { error }) => {
       state.error = error.message;
       state.isBusy = false;
-    },
+    });
 
-    [loadKernel.pending as any]: (state, action) => {
-      state.kernel = action.meta.arg;
+    builder.addCase(loadKernel.pending, (state, { meta }) => {
+      state.kernel = meta.arg;
       state.isBusy = true;
       state.error = null;
-    },
-    [loadKernel.fulfilled as any]: (state, action) => {
-      if (!action.payload) return;
+    });
+    builder.addCase(loadKernel.fulfilled, (state, { payload }) => {
+      if (!payload) return;
       if (state.urlDest) URL.revokeObjectURL(state.urlDest);
 
-      state.urlDest = action.payload;
+      state.urlDest = payload;
       state.isBusy = false;
-    },
-    [loadKernel.rejected as any]: (state, { error }) => {
+    });
+    builder.addCase(loadKernel.rejected, (state, { error }) => {
       state.error = error.message;
       state.isBusy = false;
-    },
+    });
 
-    [scaleKernel.pending as any]: (state, action) => {
+    builder.addCase(scaleKernel.pending, (state) => {
       state.isBusy = true;
       state.error = null;
-    },
-    [scaleKernel.fulfilled as any]: (state, action) => {
+    });
+    builder.addCase(scaleKernel.fulfilled, (state) => {
       state.isBusy = false;
       state.error = null;
-    },
-    [scaleKernel.rejected as any]: (state, { error }) => {
+    });
+    builder.addCase(scaleKernel.rejected, (state, { error }) => {
       state.error = error.message;
       state.isBusy = false;
-    },
-  },
+    });
+  }
 });
 
 export const name = slice.name;
 
 export const reducer = slice.reducer;
 
-export const {} = slice.actions;
+export const {} = slice.actions; // eslint-disable-line no-empty-pattern
 
 // --
 

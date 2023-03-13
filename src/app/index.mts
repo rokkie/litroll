@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
-import myform from '../myform';
-import myview from '../myview';
+import myform from '../myform/index.mjs';
+import myview from '../myview/index.mjs';
 import style from './app.module.scss';
 
 export default (state) => html`

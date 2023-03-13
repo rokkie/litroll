@@ -1,8 +1,8 @@
 import { html } from 'lit-html';
 import style from './dropzone.module.scss';
-import worker from '../store/worker-inst';
-import image from '../image';
-import { createLoadImgMsg, selectUrlOrig } from '../store/my-slice';
+import worker from '../store/worker-inst.mjs';
+import image from '../image/index.mjs';
+import { createLoadImgMsg, selectUrlOrig } from '../store/my-slice.mjs';
 
 export default (state) => {
   const url = selectUrlOrig(state);

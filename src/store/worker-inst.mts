@@ -3,6 +3,6 @@
 // The easiest way to do this is, is to make it to only single export of a module which can then
 // be imported anywhere. The fact that it's a module guarantees that you always get the same reference.
 
-const worker = new Worker('./worker-impl.ts', { name: 'store-worker', type: 'module' });
+const worker = new Worker(new URL('./worker-impl.mts', import.meta.url), { name: 'store-worker', type: 'module' });
 
 export default worker;

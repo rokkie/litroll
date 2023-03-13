@@ -1,8 +1,8 @@
 import { html } from 'lit-html';
 import style from './myform.module.scss';
-import chunk from '../util/array-chunk';
-import worker from '../store/worker-inst';
-import { createLoadKernelMsg, createScaleKernelMsg, selectKernel } from '../store/my-slice';
+import chunk from '../util/array-chunk.mjs';
+import worker from '../store/worker-inst.mjs';
+import { createLoadKernelMsg, createScaleKernelMsg, selectKernel } from '../store/my-slice.mjs';
 
 export default (state) => {
   const kernel = selectKernel(state);

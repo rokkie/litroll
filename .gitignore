@@ -158,4 +158,8 @@ src/app.js
 src/app.js.map
 src/**/*.js
 src/**/*.js.map
+src/app.mjs
+src/app.mjs.map
+src/**/*.mjs
+src/**/*.mjs.map
 src/**/*.d.ts

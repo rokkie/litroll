@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "module": "ES2015",
-    "target": "ES2018",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "isolatedModules": true,
     "importHelpers": true,
     "sourceMap": true,
     "lib": [
-      "DOM",
-      "WebWorker",
-      "WebWorker.ImportScripts"
+      "ES2021",
+      "DOM"
     ]
   },
   "files": [
-    "src/main.ts"
+    "src/main.mts"
   ],
   "include": [
     "typings/*.d.ts",

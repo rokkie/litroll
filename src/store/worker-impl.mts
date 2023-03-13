@@ -1,8 +1,8 @@
-import store from './index';
-import { loadImage, loadKernel, scaleKernel } from './my-slice';
+import store from './index.mjs';
+import { loadImage, loadKernel, scaleKernel } from './my-slice.mjs';
 
 // install event handler from incoming messages from the UI thread
-self.addEventListener('message', (evt: MessageEvent) => {
+self.addEventListener('message', evt => {
   // ignore messages that don't have a `type`
   if (!evt.data.type) return;
 

@@ -13,7 +13,7 @@ export default ({ attributes, bundle, files, meta: metas, publicPath, title }) =
 <head>
   ${metas.map(metaTag).join('\n')}
   <title>${title}</title>
-  <style type="text/css">
+  <style>
   @import url(//fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600&display=swap);
 
   :root {

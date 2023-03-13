@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
-import image from '../image';
+import image from '../image/index.mjs';
 import style from './result.module.scss';
-import { selectErrorMsg, selectIsBusy, selectUrlDest } from '../store/my-slice';
+import { selectErrorMsg, selectIsBusy, selectUrlDest } from '../store/my-slice.mjs';
 
 export default (state) => {
   const isBusy = selectIsBusy(state);

@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
-import dropzone  from '../dropzone';
-import result from '../result';
+import dropzone  from '../dropzone/index.mjs';
+import result from '../result/index.mjs';
 import style from './myview.module.scss';
 
 export default (state) => html`
